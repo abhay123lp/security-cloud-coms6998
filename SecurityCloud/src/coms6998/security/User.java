@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 
 public class User {
 
-	private int id;
+
 	private AmazonEC2 ec2;
 	private AmazonS3Client s3;
 	private String username;
@@ -18,6 +18,7 @@ public class User {
 	private List<Group> groups;
 	private String oneTimePassword;
 	private AwsProvision awsProvision;
+	private List<FileObject> files;
 
 	
 	// HashMap to create/retrieve unique instances of the user
@@ -82,8 +83,12 @@ public class User {
 	
 	public AmazonS3Client getS3() {
 		return s3;
+	
 	}
- 	
+	public List<FileObject> getFiles()
+	{
+		return files;
+	}
 	
 	
 
