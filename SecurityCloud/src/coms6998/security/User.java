@@ -22,6 +22,16 @@ public class User {
 	
 	// HashMap to create/retrieve unique instances of the user
 	private static final Map<Object, User> instances = new HashMap<Object, User>();
+	public void addGroup(Group groupname)
+	{
+		groups.add(groupname);
+	}
+	public void deleteGroup(Group groupname)
+	{
+		groups.remove(groupname);
+	}
+
+
 
 	public static User getInstance(String username, String password) {
 		
