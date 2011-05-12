@@ -27,11 +27,11 @@ import coms6998.security.s3.S3File;
 public class User {
 
     private S3 s3;
-    private String username = null;
-    private String password = null;
-    private List<Group> groups = null;
-    private String oneTimePassword = null;
-    private List<FileObject> files = null;
+    private String username;
+    private String password;
+    private List<Group> groups;
+    private String oneTimePassword;
+    private List<FileObject> files;
 
 
     // to store the encryption keys for a particular file
@@ -84,24 +84,31 @@ public class User {
         return s3;
     }
 
-    public void uploadFile(FileObject file) throws NoSuchAlgorithmException,
+    public void uploadFile(FileObject file, Group group) throws NoSuchAlgorithmException,
     InvalidKeyException, NoSuchPaddingException,
     InvalidAlgorithmParameterException, IllegalBlockSizeException,
     BadPaddingException, IOException {
 
-        // set the permission of the file
-        file.setPermission(FilePermission.Private);
-
-        // add the encryption key of the file to its hashmap
-        file.generateKey();
-        keyMap.put(file, file.getKey());
+    	String key = null;
+    	
+    	// check the permission of the file
+    	if (file.getPermission().equals(FilePermission.Group)) {
+    		// use the group key
+    		key = group.getKey();
+            
+    	} 
+    	
+    	if (file.getPermission().equals(FilePermission.Private)) {
+    		// use the file key
+    		key = file.getKey();
+    	}
+    	
+    	// add them to the hashmaps
+    	keyMap.put(file, key);
         FileObject.fileMap.put(file.getFilename(), file);
 
-        // encrypt the file
-        file.encryptFile();
-
         // upload this to S3
-        String toUpload = file.getEncryptedFile();
+        String toUpload = file.encryptFile(key);
 
         S3Bucket bucket = s3.getBucket("jla2164");
         if (bucket != null) {

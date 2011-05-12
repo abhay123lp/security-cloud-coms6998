@@ -80,10 +80,11 @@ public class FileObject {
 
 	}
 	
-	public void encryptFile() throws NoSuchAlgorithmException,
+	public String encryptFile(String key) throws NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidKeyException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		
+		this.key = key;
 		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		IvParameterSpec ivspec = new IvParameterSpec(iv);
 		SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(), "AES");
@@ -96,6 +97,7 @@ public class FileObject {
 		encryptedText = cipher.doFinal(plaintext.getBytes());
 		
 		cipherText = new String(encryptedText);
+		return cipherText;
 		
 	}
 	
