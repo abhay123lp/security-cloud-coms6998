@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import coms6998.security.s3.S3;
-import coms6998.security.s3.S3Bucket;
-import coms6998.security.FileObject.FilePermission;
-
 /**
  * @author Jaya
  *
@@ -72,26 +68,8 @@ public class SecuredCloudManager {
             groupInfo.add(group3);
 
         } catch (NoSuchAlgorithmException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
-        // create a single bucket for all the users		
-        S3 s3 = S3.getInstance();
-        S3Bucket bucket = s3.createBucket("jla2164");
-
-        // create a file object and set permissions on it
-        FileObject file = new FileObject("TestFile", "this is a sample file");
-        file.setPermission(FilePermission.Group);
-
-
-        try {
-            user1.downloadFile("TestFile");
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
 }
