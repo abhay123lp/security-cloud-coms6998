@@ -30,7 +30,7 @@ public class User {
 
 
     // to store the encryption keys for a particular file
-    private static Map<FileObject, String> keyMap = new HashMap<FileObject, String>();
+    private static Map<String, String> keyMap = new HashMap<String, String>();
     private static final String BUCKET_NAME = "edu.columbia.cloud.test";
 
     // HashMap to create/retrieve unique instances of the user
@@ -60,7 +60,7 @@ public class User {
         return instance;
 
     }
-    
+
     private User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -72,11 +72,11 @@ public class User {
     public String getOTP() {
         return oneTimePassword;
     }
-    
+
     public void addToGroup(Group group) {
         groups.add(group);
     }
-    
+
     public String getUsername() {
         return username;
     }
@@ -90,26 +90,27 @@ public class User {
     }
 
     public void uploadFile(FileObject file, Group group) throws NoSuchAlgorithmException,
-    InvalidKeyException, NoSuchPaddingException,
-    InvalidAlgorithmParameterException, IllegalBlockSizeException,
-    BadPaddingException, IOException {
+        InvalidKeyException, NoSuchPaddingException,
+        InvalidAlgorithmParameterException, IllegalBlockSizeException,
+        BadPaddingException, IOException {
 
-    	String key = null;
-    	
-    	// check the permission of the file
-    	if (file.getPermission().equals(FilePermission.Group)) {
-    		// use the group key
-    		key = group.getKey();
-            
-    	} 
-    	
-    	if (file.getPermission().equals(FilePermission.Private)) {
-    		// use the file key
-    		key = file.getKey();
-    	}
-    	
-    	// add them to the hashmaps
-    	keyMap.put(file, key);
+        String key = null;
+
+        // check the permission of the file
+        if (file.getPermission().equals(FilePermission.Group)) {
+            // use the group key
+            key = group.generateKey();
+            System.out.println("Group key is "+key);
+
+        } 
+
+        if (file.getPermission().equals(FilePermission.Private)) {
+            // use the file key
+            key = file.getKey();
+        }
+
+        // add them to the hashmaps
+        keyMap.put(file.getFilename(), key);
         FileObject.fileMap.put(file.getFilename(), file);
 
         // upload this to S3
@@ -126,9 +127,9 @@ public class User {
     }
 
     public String downloadFile(String filename) throws InvalidKeyException,
-    NoSuchAlgorithmException, NoSuchPaddingException,
-    InvalidAlgorithmParameterException, IllegalBlockSizeException,
-    BadPaddingException {
+        NoSuchAlgorithmException, NoSuchPaddingException,
+        InvalidAlgorithmParameterException, IllegalBlockSizeException,
+        BadPaddingException {
 
         // check if the user has permissions to download the file
 
@@ -139,8 +140,9 @@ public class User {
 
         // get the key for the file
         String key = keyMap.get(filename);
+        System.out.println("Key is "+key);
         FileObject file = FileObject.fileMap.get(filename);
-        String plainText = file.decryptFile();
+        String plainText = file.decryptFile(key);
         System.out.println("The file content downloaded is :"+plainText);
         return plainText;
 
