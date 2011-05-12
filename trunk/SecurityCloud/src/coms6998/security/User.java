@@ -30,7 +30,7 @@ public class User {
 
 
     // to store the encryption keys for a particular file
-    private Map<String, String> keyMap = new HashMap<String, String>();
+    public Map<String, String> keyMap = new HashMap<String, String>();
 
     // HashMap to create/retrieve unique instances of the user
     private static final Map<Object, User> instances = new HashMap<Object, User>();
@@ -94,24 +94,29 @@ public class User {
         BadPaddingException, IOException {
 
     	// add file to the group
-    	group.addFileToGroup(file);
         String key = null;
 
         // check the permission of the file
         if (file.getPermission().equals(FilePermission.Group)) {
+        	group.addFileToGroup(file);
             // use the group key
             key = group.generateKey();
+            Set<User> groupUsers = group.getUsers();
+            for (User user: groupUsers) {
+            	user.keyMap.put(file.getFilename(), key);
+            }
             //System.out.println("Group key is "+key);
 
         } 
 
         if (file.getPermission().equals(FilePermission.Private)) {
+        	this.files.add(file);
             // use the file key
             key = file.getKey();
+            keyMap.put(file.getFilename(), key);
         }
-
+        
         // add them to the hashmaps
-        keyMap.put(file.getFilename(), key);
         FileObject.fileMap.put(file.getFilename(), file);
 
         // upload this to S3
@@ -135,7 +140,7 @@ public class User {
         // check if the user has permissions to download the file
         String key = keyMap.get(filename);
         if (key == null) {
-            System.err.println("User has no access to the file.");
+            System.out.println("*****User has no access to the file*******.");
             return "";
         }
 
@@ -148,7 +153,7 @@ public class User {
         //System.out.println("Key is "+key);
         FileObject file = FileObject.fileMap.get(filename);
         String plainText = file.decryptFile(key);
-        System.out.println("The file content downloaded is :"+plainText);
+        System.out.println("*****Content of downloaded file :"+plainText);
         return plainText;
 
     }
@@ -164,6 +169,7 @@ public class User {
     		files.addAll(group.getFiles());
     	}
     	
+    	files.addAll(this.files);
     	return files;
     	
     }

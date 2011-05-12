@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Group {
 
-    private List<User> users;
+    private Set<User> users;
     private String key;
     private String name;
     private Set<FileObject> files = new HashSet<FileObject>();
@@ -17,7 +17,7 @@ public class Group {
     public Group(String name) throws NoSuchAlgorithmException {
         this.name = name;
         //this.generateKey();
-        this.users = new ArrayList<User>();
+        this.users = new HashSet<User>();
     }
 
     public void addUserToGroup(User user) {
@@ -66,4 +66,9 @@ public class Group {
     	return this.files;
     }
     
+    public Set<User> getUsers() {
+    	return this.users;
+    }
+    
+     
  }
