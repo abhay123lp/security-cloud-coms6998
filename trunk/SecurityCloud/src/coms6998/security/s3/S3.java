@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.model.Bucket;
 
 public class S3 {
 
-    private static final S3 INSTANCE = new S3("AKIAJQI77NKHES62FKDQ", "V2oud1zY0YtEVfvXlbs/1DvUjjYJ/1Nd8pqKPOk7");
+    private static final S3 INSTANCE = new S3("", "");
     private final AmazonS3 s3;
     
     private S3(String accessKey, String secretKey) {
