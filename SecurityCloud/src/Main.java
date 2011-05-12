@@ -14,28 +14,42 @@ import coms6998.security.FileObject.FilePermission;
 
 public class Main {
 
-    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException {
-        User user = SecuredCloudManager.getUser("mohankrishna10@gmail.com");
-        User user2 = SecuredCloudManager.getUser("asthamalik8@gmail.com");
-        User user3 = SecuredCloudManager.getUser("jaya.allamsetty@gmail.com");
+	public static void main(String[] args) throws NoSuchAlgorithmException,
+			InvalidKeyException, NoSuchPaddingException,
+			InvalidAlgorithmParameterException, IllegalBlockSizeException,
+			BadPaddingException, IOException {
+		User user1 = SecuredCloudManager.getUser("jaya.allamsetty@gmail.com");
+		User user2 = SecuredCloudManager.getUser("meetmerohitsonu@gmail.com");
+		User user3 = SecuredCloudManager.getUser("mohankrishna10@gmail.com");
+		User user4 = SecuredCloudManager.getUser("asthamalik8@gmail.com");
+		User user5 = SecuredCloudManager.getUser("bk2409@columbia.edu");
 
-        /*FileObject file = new FileObject("test12345", "Testing Text");
-        file.setPermission(FilePermission.Private);
-        user.uploadFile(file, null);
-        user.downloadFile("test12345");*/
-        
-        FileObject file2 = new FileObject("test2", "Sharing with groups");
-        file2.setPermission(FilePermission.Group);
-        user2.uploadFile(file2, SecuredCloudManager.getGroup("Group2"));
-        
-        user.downloadFile("test2");
-        user3.downloadFile("test2");
-        
-        for (FileObject file: user.getFiles()) {
-        	System.out.println("File name: "+file.getFilename());
-        }
-        
+		FileObject file1 = new FileObject("test12345", "Testing Text");
+		file1.setPermission(FilePermission.Private);
+		user1.uploadFile(file1, null);
+		user1.downloadFile("test12345");
 
-    }
-    
+		// no other user should be able to download
+		user2.downloadFile("test12345");
+
+		FileObject file2 = new FileObject("test2",
+				"Sharing objects with groups");
+		file2.setPermission(FilePermission.Group);
+		user2.uploadFile(file2, SecuredCloudManager.getGroup("Group1"));
+		user2.downloadFile("test2");
+
+		// user1 should be able to download
+		user1.downloadFile("test2");
+		// user3 should not be able to download
+		user3.downloadFile("test2");
+
+		// get the file listing for a user
+		System.out.println("Files accessible to " + user1.getUsername()
+				+ " are:");
+		for (FileObject file : user1.getFiles()) {
+			System.out.println("File name: " + file.getFilename());
+		}
+
+	}
+
 }
