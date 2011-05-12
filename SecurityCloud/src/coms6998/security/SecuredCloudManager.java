@@ -77,8 +77,8 @@ public class SecuredCloudManager {
         }
         
         S3 s3 = S3.getInstance();
-        if(s3.getBucket("jla2164") == null) {
-            s3.createBucket("jla2164");
+        if(s3.getBucket(BUCKET_NAME) == null) {
+            s3.createBucket(BUCKET_NAME);
         }
     }
 
