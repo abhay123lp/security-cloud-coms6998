@@ -3,13 +3,16 @@ package coms6998.security;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Group {
 
     private List<User> users;
     private String key;
     private String name;
+    private Set<FileObject> files = new HashSet<FileObject>();
 
     public Group(String name) throws NoSuchAlgorithmException {
         this.name = name;
@@ -21,6 +24,10 @@ public class Group {
         users.add(user);
     }
 
+    public void addFileToGroup(FileObject file) {
+    	files.add(file);
+    }
+    
     public boolean isMember(User user) {
         for (User u: users) {
             if (user.equals(u)) {
@@ -40,9 +47,9 @@ public class Group {
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(this.name.getBytes());
-        System.out.println("Size of the key for the file "+this.name+ " is "+hash.length);
+        //System.out.println("Size of the key for the file "+this.name+ " is "+hash.length);
         this.key = new String(hash);
-        System.out.println("Key for the file is "+this.key);
+        //System.out.println("Key for the file is "+this.key);
         return key;
 
     }
@@ -55,4 +62,8 @@ public class Group {
         return this.key;
     }
 
-}
+    public Set<FileObject> getFiles() {
+    	return this.files;
+    }
+    
+ }
