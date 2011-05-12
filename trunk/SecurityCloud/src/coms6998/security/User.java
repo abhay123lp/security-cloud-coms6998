@@ -30,7 +30,7 @@ public class User {
 
 
     // to store the encryption keys for a particular file
-    private static Map<String, String> keyMap = new HashMap<String, String>();
+    private Map<String, String> keyMap = new HashMap<String, String>();
 
     // HashMap to create/retrieve unique instances of the user
     private static final Map<Object, User> instances = new HashMap<Object, User>();
@@ -93,13 +93,15 @@ public class User {
         InvalidAlgorithmParameterException, IllegalBlockSizeException,
         BadPaddingException, IOException {
 
+    	// add file to the group
+    	group.addFileToGroup(file);
         String key = null;
 
         // check the permission of the file
         if (file.getPermission().equals(FilePermission.Group)) {
             // use the group key
             key = group.generateKey();
-            System.out.println("Group key is "+key);
+            //System.out.println("Group key is "+key);
 
         } 
 
@@ -132,7 +134,7 @@ public class User {
 
         // check if the user has permissions to download the file
         String key = keyMap.get(filename);
-        if(key == null){
+        if (key == null) {
             System.err.println("User has no access to the file.");
             return "";
         }
@@ -143,7 +145,7 @@ public class User {
         String downloadedFile = s3file.getContent();
 
         // get the key for the file
-        System.out.println("Key is "+key);
+        //System.out.println("Key is "+key);
         FileObject file = FileObject.fileMap.get(filename);
         String plainText = file.decryptFile(key);
         System.out.println("The file content downloaded is :"+plainText);
@@ -153,6 +155,17 @@ public class User {
 
     public void shareFile(List<Group> groups) {
 
+    }
+    
+    public Set<FileObject> getFiles() {
+    	
+    	Set<FileObject> files = new HashSet<FileObject>();
+    	for (Group group: groups) {
+    		files.addAll(group.getFiles());
+    	}
+    	
+    	return files;
+    	
     }
 
     public void setOTP(String otp) {
