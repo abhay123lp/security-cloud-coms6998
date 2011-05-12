@@ -132,6 +132,11 @@ public class User {
         BadPaddingException {
 
         // check if the user has permissions to download the file
+        String key = keyMap.get(filename);
+        if(key == null){
+            System.err.println("User has no access to the file.");
+            return "";
+        }
 
         // get the content from the S3 bucket
         S3Bucket bucket = s3.getBucket("jla2164");
@@ -139,7 +144,6 @@ public class User {
         String downloadedFile = s3file.getContent();
 
         // get the key for the file
-        String key = keyMap.get(filename);
         System.out.println("Key is "+key);
         FileObject file = FileObject.fileMap.get(filename);
         String plainText = file.decryptFile(key);
