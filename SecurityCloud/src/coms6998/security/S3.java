@@ -1,6 +1,8 @@
 package coms6998.security;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -8,6 +10,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class S3 {
 
@@ -19,8 +23,25 @@ public class S3 {
         s3 = new AmazonS3Client(aws);
     }
     
+    /**
+     * Returns an instance of the S3 with the in build parameters that are provided.
+     * @return
+     */
     public static S3 getInstance() {
         return INSTANCE;
+    }
+    
+    /**
+     * Returns the Files present in the bucketname as a list of {@link S3ObjectSummary} else an empty list.
+     * @param bucketName
+     * @return
+     */
+    public List<S3ObjectSummary>getBucketContents(String bucketName) {
+        if(!s3.doesBucketExist(bucketName)) {
+            return Collections.emptyList();
+        }
+        ObjectListing listing = s3.listObjects(bucketName);
+        return listing.getObjectSummaries();
     }
     
     /**
@@ -47,6 +68,11 @@ public class S3 {
         return null;
     }
     
+    /**
+     * Uploads the file to the specified bucket. The file is stored as the string returned by the File.getName() method 
+     * @param bucketName
+     * @param file
+     */
     public void uploadFile(String bucketName, File file) {
         s3.putObject(bucketName, file.getName(), file);
     }
