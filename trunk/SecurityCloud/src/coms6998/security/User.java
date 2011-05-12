@@ -1,23 +1,18 @@
 package coms6998.security;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import coms6998.security.FileObject.FilePermission;
 import coms6998.security.s3.S3;
@@ -29,9 +24,9 @@ public class User {
     private S3 s3;
     private String username;
     private String password;
-    private List<Group> groups;
+    private Set<Group> groups;
     private String oneTimePassword;
-    private List<FileObject> files;
+    private Set<FileObject> files;
 
 
     // to store the encryption keys for a particular file
@@ -65,13 +60,23 @@ public class User {
         return instance;
 
     }
-
+    
     private User(String username, String password) {
         this.username = username;
         this.password = password;
         this.s3 = S3.getInstance();
+        this.groups = new HashSet<Group>();
+        this.files = new HashSet<FileObject>();
     }
 
+    public String getOTP() {
+        return oneTimePassword;
+    }
+    
+    public void addToGroup(Group group) {
+        groups.add(group);
+    }
+    
     public String getUsername() {
         return username;
     }
@@ -145,4 +150,7 @@ public class User {
 
     }
 
+    public void setOTP(String otp) {
+        this.oneTimePassword = otp;
+    }
 }
