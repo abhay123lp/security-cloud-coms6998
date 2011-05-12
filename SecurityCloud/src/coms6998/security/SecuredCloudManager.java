@@ -2,9 +2,7 @@ package coms6998.security;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import coms6998.security.s3.S3;
 
@@ -17,8 +15,7 @@ public class SecuredCloudManager {
     public static final String BUCKET_NAME = "jla2164";
     
     public static Map<String, User> userInfo;
-    public static Set<Group> groupInfo;
-
+    public static Map<String, Group> groupInfo;
     
     static {
         init();
@@ -28,6 +25,10 @@ public class SecuredCloudManager {
         return userInfo.get(username);
     }
 
+    public static Group getGroup(String groupname) {
+        return groupInfo.get(groupname);
+    }
+    
     /**
      * @param args
      */
@@ -67,10 +68,10 @@ public class SecuredCloudManager {
             group3.addUserToGroup(user5);
             user5.addToGroup(group3);
 
-            groupInfo = new HashSet<Group>();
-            groupInfo.add(group1);
-            groupInfo.add(group2);
-            groupInfo.add(group3);
+            groupInfo = new HashMap<String, Group>();
+            groupInfo.put(group1.getName(), group1);
+            groupInfo.put(group2.getName(), group2);
+            groupInfo.put(group3.getName(), group3);
 
         } catch (NoSuchAlgorithmException e1) {
             e1.printStackTrace();
