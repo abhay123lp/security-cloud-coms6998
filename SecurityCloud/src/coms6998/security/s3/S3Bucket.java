@@ -1,11 +1,14 @@
 package coms6998.security.s3;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
@@ -67,8 +70,9 @@ public class S3Bucket {
      * @param bucketName
      * @param file
      */
-    public void uploadFile(File file) {
-        s3.putObject(bucket.getName(), file.getName(), file);
+    public void uploadFile(String fileName, String text) {
+        InputStream in = new ByteArrayInputStream(text.getBytes());
+        s3.putObject(bucket.getName(), fileName, in, new ObjectMetadata());
     }
     
     /**

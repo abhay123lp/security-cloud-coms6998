@@ -26,119 +26,116 @@ import coms6998.security.s3.S3File;
 
 public class User {
 
-	private S3 s3;
-	private String username = null;
-	private String password = null;
-	private List<Group> groups = null;
-	private String oneTimePassword = null;
-	private List<FileObject> files = null;
-	
+    private S3 s3;
+    private String username = null;
+    private String password = null;
+    private List<Group> groups = null;
+    private String oneTimePassword = null;
+    private List<FileObject> files = null;
 
-	// to store the encryption keys for a particular file
-	private static Map<FileObject, String> keyMap = new HashMap<FileObject, String>();
-	private static final String BUCKET_NAME = "edu.columbia.cloud.test";
 
-	// HashMap to create/retrieve unique instances of the user
-	private static final Map<Object, User> instances = new HashMap<Object, User>();
+    // to store the encryption keys for a particular file
+    private static Map<FileObject, String> keyMap = new HashMap<FileObject, String>();
+    private static final String BUCKET_NAME = "edu.columbia.cloud.test";
 
-	public static User getInstance(String username, String password) {
+    // HashMap to create/retrieve unique instances of the user
+    private static final Map<Object, User> instances = new HashMap<Object, User>();
 
-		String key = username + password;
-		User instance = instances.get(key);
+    public static User getInstance(String username, String password) {
 
-		if (instance == null) {
+        String key = username + password;
+        User instance = instances.get(key);
 
-			synchronized (instances) {
+        if (instance == null) {
 
-				// check again after synchronization
-				instance = instances.get(key);
-				if (instance == null) {
-					instance = new User(username, password);
+            synchronized (instances) {
 
-					// add it to the map
-					instances.put(key, instance);
-				}
+                // check again after synchronization
+                instance = instances.get(key);
+                if (instance == null) {
+                    instance = new User(username, password);
 
-			} // end of synchronized
+                    // add it to the map
+                    instances.put(key, instance);
+                }
 
-		}// end of if loop
-		return instance;
+            } // end of synchronized
 
-	}
+        }// end of if loop
+        return instance;
 
-	private User(String username, String password) {
-		this.username = username;
-		this.password = password;
-		this.s3 = S3.getInstance();
-	}
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    private User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.s3 = S3.getInstance();
+    }
 
-	public String getPassword() {
-		return password;
-	}
-	
-	public S3 getS3() {
-		return s3;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void uploadFile(FileObject file) throws NoSuchAlgorithmException,
-			InvalidKeyException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, IllegalBlockSizeException,
-			BadPaddingException, IOException {
+    public String getPassword() {
+        return password;
+    }
 
-		// set the permission of the file
-		file.setPermission(FilePermission.Private);
+    public S3 getS3() {
+        return s3;
+    }
 
-		// add the encryption key of the file to its hashmap
-		file.generateKey();
-		keyMap.put(file, file.getKey());
-		FileObject.fileMap.put(file.getFilename(), file);
+    public void uploadFile(FileObject file) throws NoSuchAlgorithmException,
+    InvalidKeyException, NoSuchPaddingException,
+    InvalidAlgorithmParameterException, IllegalBlockSizeException,
+    BadPaddingException, IOException {
 
-		// encrypt the file
-		file.encryptFile();
+        // set the permission of the file
+        file.setPermission(FilePermission.Private);
 
-		// upload this to S3
-		String toUpload = file.getEncryptedFile();
-		
-		// write it a file
-		File opfile = new File(file.getFilename());
-		BufferedWriter out = new BufferedWriter(new FileWriter(opfile));
-		out.write(toUpload);
-		out.close();
-		
-		S3Bucket bucket = s3.getBucket("jla2164");
-		if (bucket != null) {
-			bucket.uploadFile(opfile);
-		} else System.out.println("Bucket not found !!");
+        // add the encryption key of the file to its hashmap
+        file.generateKey();
+        keyMap.put(file, file.getKey());
+        FileObject.fileMap.put(file.getFilename(), file);
 
-	}
+        // encrypt the file
+        file.encryptFile();
 
-	public String downloadFile(String filename) throws InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidAlgorithmParameterException, IllegalBlockSizeException,
-			BadPaddingException {
-		
-		// check if the user has permissions to download the file
-		
-		// get the content from the S3 bucket
-		S3Bucket bucket = s3.getBucket("jla2164");
-		S3File s3file = bucket.getFile(filename);
-		String downloadedFile = s3file.getContent();
-		
-		// get the key for the file
-		String key = keyMap.get(filename);
-		FileObject file = FileObject.fileMap.get(filename);
-		String plainText = file.decryptFile();
-		System.out.println("The file content downloaded is :"+plainText);
-		return plainText;
-		
-	}
+        // upload this to S3
+        String toUpload = file.getEncryptedFile();
 
-	public void shareFile(List<Group> groups) {
+        S3Bucket bucket = s3.getBucket("jla2164");
+        if (bucket != null) {
+            bucket.uploadFile(file.getFilename(), toUpload);
+        } 
+        else {
+            System.out.println("Bucket not found !!");
+        }
 
-	}
+    }
+
+    public String downloadFile(String filename) throws InvalidKeyException,
+    NoSuchAlgorithmException, NoSuchPaddingException,
+    InvalidAlgorithmParameterException, IllegalBlockSizeException,
+    BadPaddingException {
+
+        // check if the user has permissions to download the file
+
+        // get the content from the S3 bucket
+        S3Bucket bucket = s3.getBucket("jla2164");
+        S3File s3file = bucket.getFile(filename);
+        String downloadedFile = s3file.getContent();
+
+        // get the key for the file
+        String key = keyMap.get(filename);
+        FileObject file = FileObject.fileMap.get(filename);
+        String plainText = file.decryptFile();
+        System.out.println("The file content downloaded is :"+plainText);
+        return plainText;
+
+    }
+
+    public void shareFile(List<Group> groups) {
+
+    }
 
 }
