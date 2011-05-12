@@ -6,16 +6,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import coms6998.security.s3.S3;
+
 /**
  * @author Jaya
  *
  */
 public class SecuredCloudManager {
 
+    public static final String BUCKET_NAME = "jla2164";
+    
     public static Map<String, User> userInfo;
     public static Set<Group> groupInfo;
 
-    {
+    
+    static {
         init();
     }
 
@@ -69,6 +74,11 @@ public class SecuredCloudManager {
 
         } catch (NoSuchAlgorithmException e1) {
             e1.printStackTrace();
+        }
+        
+        S3 s3 = S3.getInstance();
+        if(s3.getBucket("jla2164") == null) {
+            s3.createBucket("jla2164");
         }
     }
 
