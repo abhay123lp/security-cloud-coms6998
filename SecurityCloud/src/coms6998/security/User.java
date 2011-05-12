@@ -31,7 +31,6 @@ public class User {
 
     // to store the encryption keys for a particular file
     private static Map<String, String> keyMap = new HashMap<String, String>();
-    private static final String BUCKET_NAME = "edu.columbia.cloud.test";
 
     // HashMap to create/retrieve unique instances of the user
     private static final Map<Object, User> instances = new HashMap<Object, User>();
@@ -116,7 +115,7 @@ public class User {
         // upload this to S3
         String toUpload = file.encryptFile(key);
 
-        S3Bucket bucket = s3.getBucket("jla2164");
+        S3Bucket bucket = s3.getBucket(SecuredCloudManager.BUCKET_NAME);
         if (bucket != null) {
             bucket.uploadFile(file.getFilename(), toUpload);
         } 
@@ -139,7 +138,7 @@ public class User {
         }
 
         // get the content from the S3 bucket
-        S3Bucket bucket = s3.getBucket("jla2164");
+        S3Bucket bucket = s3.getBucket(SecuredCloudManager.BUCKET_NAME);
         S3File s3file = bucket.getFile(filename);
         String downloadedFile = s3file.getContent();
 
