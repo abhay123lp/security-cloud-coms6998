@@ -38,11 +38,11 @@ public class SecuredCloudManager {
         //final String BUCKET_NAME = "edu.columbia.cloud.test";
 
         // Create the User objects
-        User user1 = User.getInstance("jaya.allamsetty@gmail.com", "password1");
-        User user2 = User.getInstance("meetmerohitsonu@gmail.com", "password2");
-        User user3 = User.getInstance("mohankrishna10@gmail.com", "password3");
-        User user4 = User.getInstance("asthamalik8@gmail.com", "password4");
-        User user5 = User.getInstance("bk2409@columbia.edu", "password5");
+        User user1 = User.getInstance("a@gmail.com", "password1");
+        User user2 = User.getInstance("ab@gmail.com", "password2");
+        User user3 = User.getInstance("abc@gmail.com", "password3");
+        User user4 = User.getInstance("abcd@gmail.com", "password4");
+        User user5 = User.getInstance("abcde@columbia.edu", "password5");
 
         userInfo = new HashMap<String, User>();
         userInfo.put(user1.getUsername(), user1);
