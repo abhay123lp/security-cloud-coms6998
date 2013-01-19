@@ -18,11 +18,11 @@ public class Main {
 			InvalidKeyException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException,
 			BadPaddingException, IOException {
-		User user1 = SecuredCloudManager.getUser("jaya.allamsetty@gmail.com");
-		User user2 = SecuredCloudManager.getUser("meetmerohitsonu@gmail.com");
-		User user3 = SecuredCloudManager.getUser("mohankrishna10@gmail.com");
-		User user4 = SecuredCloudManager.getUser("asthamalik8@gmail.com");
-		User user5 = SecuredCloudManager.getUser("bk2409@columbia.edu");
+		User user1 = SecuredCloudManager.getUser("a@gmail.com");
+		User user2 = SecuredCloudManager.getUser("ab@gmail.com");
+		User user3 = SecuredCloudManager.getUser("abc@gmail.com");
+		User user4 = SecuredCloudManager.getUser("abcd@gmail.com");
+		User user5 = SecuredCloudManager.getUser("abcde@columbia.edu");
 
 		FileObject file1 = new FileObject("test12345", "Testing Text");
 		file1.setPermission(FilePermission.Private);
